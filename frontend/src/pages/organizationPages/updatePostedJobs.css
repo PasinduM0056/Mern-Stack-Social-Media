@@ -1,0 +1,122 @@
+.updatejob-form-container {
+    width: 660px;
+    background: linear-gradient(#212121, #4f4f4f) padding-box,
+                linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
+    border: 1px solid transparent;
+    padding: 32px 24px;
+    font-size: 14px;
+    font-family: inherit;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    box-sizing: border-box;
+    border-radius: 16px;
+    background-size: 200% 100%;
+    animation: gradient 5s ease infinite;
+    margin:auto;
+  }
+  
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+  
+    50% {
+      background-position: 100% 50%;
+    }
+  
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .updatejob-form-container button:active {
+    scale: 0.95;
+  }
+  
+  .updatejob-form-container .updatejob-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .updatejob-form-container .updatejob-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .updatejob-form-container .updatejob-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #717171;
+    font-weight: 600;
+    font-size: 12px;
+  }
+  
+  .updatejob-form-container .updatejob-form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    background-color: transparent;
+    border: 1px solid #414141;
+  }
+  
+  .updatejob-form-container .updatejob-form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    resize: none;
+    color: #fff;
+    height: 96px;
+    border: 1px solid #414141;
+    background-color: transparent;
+    font-family: inherit;
+  }
+  
+  .updatejob-form-container .fupdatejob-orm-group input::placeholder {
+    opacity: 0.5;
+  }
+  
+  .updatejob-form-container .updatejob-form-group input:focus {
+  
+    border: 13px;
+    border-color: #e81cff;
+  }
+  
+  .updatejob-form-container .updatejob-form-group textarea:focus {
+    outline: none;
+    border-color: #e81cff;
+  }
+  
+  .updatejob-form-container .updatejob-form-submit-btn {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    align-self: flex-start;
+    font-family: inherit;
+    color: #717171;
+    font-weight: 600;
+    width: 40%;
+    background: #313131;
+    border: 1px solid #414141;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  
+  .form-container .updatejob-form-submit-btn:hover {
+    background-color: #fff;
+    border-color: #fff;
+  }
+  
+  
+  
+  
