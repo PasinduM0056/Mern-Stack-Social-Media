@@ -3,7 +3,17 @@ import mongoose from "mongoose";
 const userSchema = mongoose.Schema(
 	{
 		
-		username: {
+		petName: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		petCategory: {
+			type: String,
+			required: true,
+			unique: true,
+		},
+		ownerName: {
 			type: String,
 			required: true,
 			unique: true,
@@ -68,18 +78,6 @@ const userSchema = mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
-		name: {
-			type: String,
-			default: "",
-		},
-		address: {
-			type: String,
-			default: "",
-		},
-		idNumber: {
-			type: String,
-			default: "",
-		},
 		qualification: {
 			type: String,
 			default: "",
@@ -88,11 +86,6 @@ const userSchema = mongoose.Schema(
 			type: String,
 			default: "",
 		},
-		identityVerify: {
-			type: String,
-			default: "",
-		},
-		
 		isOrganization: {
 			type: Boolean,
 			default: false,
@@ -101,15 +94,11 @@ const userSchema = mongoose.Schema(
 			type: String,
 			default: "",
 		},
-		OrganizationAddress: {
-			type: String,
-			default: "",
-		},
 		OrganizationAbout: {
 			type: String,
 			default: "",
 		},
-		IDnumber: {
+		identityVerify: {
 			type: String,
 			default: "",
 		},
