@@ -2,7 +2,7 @@ import Package from "../models/packageModel.js"
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
-const createPackage = async (req, res) => {
+const createJob = async (req, res) => {
 	try {
 		const { postedBy, packageName, packageDescription, packagePrice, packageOfferPrice} = req.body;
 		let { packageImg } = req.body;
@@ -36,7 +36,7 @@ const createPackage = async (req, res) => {
 	}
 };
 
-const getPackage = async (req, res) => {
+const getJob = async (req, res) => {
 	try {
 		const selectedPackage = await Package.findById(req.params.id);
 
@@ -50,7 +50,7 @@ const getPackage = async (req, res) => {
 	}
 };
 
-const deletePackage = async (req, res) => {
+const deleteJob = async (req, res) => {
 	try {
 		const selectedPackage = await Package.findById(req.params.id);
 		if (!selectedPackage) {
@@ -74,7 +74,7 @@ const deletePackage = async (req, res) => {
 	}
 };
 
-const likeUnlikePackage = async (req, res) => {
+const likeUnlikeJob = async (req, res) => {
 	try {
 		const { id: packageId } = req.params;
 		const userId = req.user._id;
@@ -102,7 +102,7 @@ const likeUnlikePackage = async (req, res) => {
 	}
 };
 
-const reviewPackage = async (req, res) => {
+const reviewJob = async (req, res) => {
 	try {
 		const { text,rating } = req.body;
 		const packageId = req.params.id;
@@ -131,7 +131,7 @@ const reviewPackage = async (req, res) => {
 	}
 };
 
-const getFeedPackages = async (req, res) => {
+const getFeedJobs = async (req, res) => {
 	try {
 		const userId = req.user._id;
 		const user = await User.findById(userId);
@@ -149,7 +149,7 @@ const getFeedPackages = async (req, res) => {
 	}
 };
 
-const getUserPackages = async (req, res) => {
+const getUserJobs = async (req, res) => {
 	const { username } = req.params;
 	try {
 		const user = await User.findOne({ username });
@@ -165,7 +165,7 @@ const getUserPackages = async (req, res) => {
 	}
 };
 
-const buyPackage = async (req, res) => {
+const buyJob = async (req, res) => {
     try {
         const packageId = req.params.id;
         const { buyerName, buyerAddress, buyerPhoneNumber } = req.body;
@@ -202,7 +202,7 @@ const buyPackage = async (req, res) => {
     }
 };
 
-const getSalesPackages = async (req, res) => {
+const getSalesJobs = async (req, res) => {
 	try {
 		const userId = req.user._id;
 		const user = await User.findById(userId);
@@ -225,4 +225,4 @@ const getSalesPackages = async (req, res) => {
 	}
 };
 
-export { createPackage, getPackage, deletePackage, likeUnlikePackage, reviewPackage, getFeedPackages, getUserPackages,buyPackage, getSalesPackages };
+export { createJob, getJob, deleteJob, likeUnlikeJob, reviewJob, getFeedJobs, getUserJobs,buyJob, getSalesJobs };
