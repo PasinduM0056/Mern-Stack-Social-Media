@@ -1,25 +1,25 @@
 import mongoose from "mongoose";
 
-const packageSchema = mongoose.Schema(
+const jobSchema = mongoose.Schema(
 	{
 		postedBy: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "User",
 			required: true,
 		},
-		packageName: {
+		jobName: {
             type: String,
         },
-        packageDescription: {
+        jobDescription: {
             type: String,
         },
-        packagePrice: {
+        jobPrice: {
             type: String,
         },
-        packageOfferPrice: {
+        jobOfferPrice: {
             type: String,
         },
-		packageImg: {
+		jobImg: {
 			type: String,
 		},
 		likes: {
@@ -88,6 +88,6 @@ const packageSchema = mongoose.Schema(
 	}
 );
 
-const Package = mongoose.model("Package", packageSchema);
+const Job = mongoose.model("Job", jobSchema);
 
-export default Package;
+export default Job;

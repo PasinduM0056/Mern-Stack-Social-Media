@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import productRoutes from "./routes/productRoutes.js"
-import packageRoutes from "./routes/packageRoutes.js"
+import packageRoutes from "./routes/jobRoutes.js"
 import messageRoutes from "./routes/messageRoutes.js"
 import addRoutes from "./routes/addRoutes.js";
 import caddRoutes from "./routes/caddRoutes.js"
