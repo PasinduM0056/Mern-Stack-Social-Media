@@ -10,9 +10,11 @@ import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
 import productsAtom from "../atoms/productAtom";
-import packagesAtom from "../atoms/packagesAtom";
+//import packagesAtom from "../atoms/packagesAtom";
 import addAtom from "../atoms/addAtoms";
-import Package from "../components/Package";
+//import Package from "../components/Package";
+import jobsAtom from "../atoms/jobsAtom";
+import Job from "../components/job";
 
 const UserPage = () => {
     const { user, loading } = useGetUserProfile();
@@ -20,15 +22,15 @@ const UserPage = () => {
     const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postsAtom);
     const [products, setProducts] = useRecoilState(productsAtom);
-    const [packages, setPackages] = useRecoilState(packagesAtom);
+    const [jobs, setJobs] = useRecoilState(jobsAtom);
     const [adds, setAdds] = useRecoilState(addAtom);
     const [fetchingPosts, setFetchingPosts] = useState(true);
     const [fetchingProducts, setFetchingProducts] = useState(true);
-    const [fetchingPackages, setFetchingPackages] = useState(true);
+    const [fetchingJobs, setFetchingJobs] = useState(true);
     const [fetchingAdds, setFetchingAdds] = useState(true);
     const [displayPosts, setDisplayPosts] = useState(true); // State to track whether to display posts
     const [displayProducts, setDisplayProducts] = useState(true);
-    const [displayPackages, setDisplayPackages] = useState(true); // State to track whether to display products
+    const [displayJobs, setDisplayJobs] = useState(true); // State to track whether to display products
     const [displayAdds, setDisplayAdds] = useState(false); // State to track whether to display advertisements
 
     useEffect(() => {
@@ -93,24 +95,24 @@ const UserPage = () => {
     }, [username, showToast, setAdds, user]);
 
     useEffect(() => {
-        const getPackages = async () => {
+        const getJobs = async () => {
             if (!user) return;
-            setFetchingPackages(true);
+            setFetchingJobs(true);
             try {
                 const res = await fetch(`/api/jobs/user/${username}`);
                 const data = await res.json();
                 console.log(data);
-                setPackages(data);
+                setJobs(data);
             } catch (error) {
                 showToast("Error", error.message, "error");
-                setPackages([]);
+                setJobs([]);
             } finally {
-                setFetchingPackages(false);
+                setFetchingJobs(false);
             }
         };
 
-        getPackages();
-    }, [username, showToast, setPackages, user]);
+        getJobs();
+    }, [username, showToast, setJobs, user]);
 
    
 
@@ -119,22 +121,22 @@ const UserPage = () => {
             setDisplayPosts(true);
             setDisplayProducts(false);
             setDisplayAdds(false);
-            setDisplayPackages(false);
+            setDisplayJobs(false);
         } else if (displayType === "products") {
             setDisplayPosts(false);
             setDisplayProducts(true);
             setDisplayAdds(false);
-            setDisplayPackages(false);
+            setDisplayJobs(false);
         } else if (displayType === "adds") {
             setDisplayPosts(false);
             setDisplayProducts(false);
             setDisplayAdds(true);
-            setDisplayPackages(false);
+            setDisplayJobs(false);
         } else if (displayType === "packages"){
             setDisplayPosts(false);
             setDisplayProducts(false);
             setDisplayAdds(false);
-            setDisplayPackages(true);
+            setDisplayJobs(true);
         }
     };
 
@@ -231,17 +233,17 @@ const UserPage = () => {
                 </>
             )}
 
-            {displayPackages && (
+            {displayJobs && (
                 <>
-                    {!fetchingPackages && packages.length === 0 && <h1>No packages available.</h1>}
-                    {fetchingPackages && (
+                    {!fetchingJobs && jobs.length === 0 && <h1>No jobs available.</h1>}
+                    {fetchingJobs && (
                         <Flex justifyContent={"center"} my={12}>
                             <Spinner size={"xl"} />
                         </Flex>
                     )}
 
-                    {packages.map((selectedPackage) => (
-                        <Package key={selectedPackage._id} selectedPackage={selectedPackage} postedBy={selectedPackage.postedBy} />
+                    {jobs.map((selectedJob) => (
+                        <Job key={selectedJob._id} selectedPackage={selectedJob} postedBy={selectedJob.postedBy} />
                     ))}
                 </>
             )}
