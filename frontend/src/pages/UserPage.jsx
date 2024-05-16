@@ -97,7 +97,7 @@ const UserPage = () => {
             if (!user) return;
             setFetchingPackages(true);
             try {
-                const res = await fetch(`/api/packages/user/${username}`);
+                const res = await fetch(`/api/jobs/user/${username}`);
                 const data = await res.json();
                 console.log(data);
                 setPackages(data);
