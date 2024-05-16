@@ -2,7 +2,7 @@ import express from "express";
 import {
 	createJob,
 	deleteJob,
-	getJob,
+	getJobs,
 	likeUnlikeJob,
 	reviewJob,
 	getFeedJobs,
@@ -14,7 +14,7 @@ import protectRoute from "../middlewares/protectRoute.js";
 const router = express.Router();
 
 router.get("/feed", protectRoute, getFeedJobs);
-router.get("/:id", getJob);
+router.get("/:id", getJobs);
 router.get("/user/:username", getUserJobs);
 router.post("/create", protectRoute, createJob);
 router.delete("/:id", protectRoute, deleteJob);

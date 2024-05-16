@@ -2,19 +2,17 @@ import { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
 import { useParams } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
-import { Flex, Spinner, Button } from "@chakra-ui/react"; // Assuming Button is imported from Chakra UI
+import { Flex, Spinner, Button } from "@chakra-ui/react";
 import Post from "../components/Post";
-import Product from "../components/Product"; // Assuming Product component is defined
-import Add from "../components/Add"; // Assuming Advertisement component is defined
+import Product from "../components/Product";
+import Add from "../components/Add";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
 import productsAtom from "../atoms/productAtom";
-//import packagesAtom from "../atoms/packagesAtom";
 import addAtom from "../atoms/addAtoms";
-//import Package from "../components/Package";
 import jobsAtom from "../atoms/jobsAtom";
-import Job from "../components/job";
+import Job from "../components/Job";
 
 const UserPage = () => {
     const { user, loading } = useGetUserProfile();
@@ -28,10 +26,10 @@ const UserPage = () => {
     const [fetchingProducts, setFetchingProducts] = useState(true);
     const [fetchingJobs, setFetchingJobs] = useState(true);
     const [fetchingAdds, setFetchingAdds] = useState(true);
-    const [displayPosts, setDisplayPosts] = useState(true); // State to track whether to display posts
+    const [displayPosts, setDisplayPosts] = useState(true);
     const [displayProducts, setDisplayProducts] = useState(true);
-    const [displayJobs, setDisplayJobs] = useState(true); // State to track whether to display products
-    const [displayAdds, setDisplayAdds] = useState(false); // State to track whether to display advertisements
+    const [displayJobs, setDisplayJobs] = useState(true);
+    const [displayAdds, setDisplayAdds] = useState(false);
 
     useEffect(() => {
         const getPosts = async () => {
@@ -73,7 +71,6 @@ const UserPage = () => {
         getProducts();
     }, [username, showToast, setProducts, user]);
 
-
     useEffect(() => {
         const getAdds = async () => {
             if (!user) return;
@@ -100,9 +97,15 @@ const UserPage = () => {
             setFetchingJobs(true);
             try {
                 const res = await fetch(`/api/jobs/user/${username}`);
-                const data = await res.json();
-                console.log(data);
-                setJobs(data);
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log(data);
+                    setJobs(Array.isArray(data) ? data : []);
+                } else {
+                    const errorData = await res.json();
+                    showToast("Error", errorData.error, "error");
+                    setJobs([]);
+                }
             } catch (error) {
                 showToast("Error", error.message, "error");
                 setJobs([]);
@@ -110,11 +113,10 @@ const UserPage = () => {
                 setFetchingJobs(false);
             }
         };
-
+    
         getJobs();
     }, [username, showToast, setJobs, user]);
-
-   
+    
 
     const handleToggleDisplay = (displayType) => {
         if (displayType === "posts") {
@@ -132,7 +134,7 @@ const UserPage = () => {
             setDisplayProducts(false);
             setDisplayAdds(true);
             setDisplayJobs(false);
-        } else if (displayType === "packages"){
+        } else if (displayType === "packages") {
             setDisplayPosts(false);
             setDisplayProducts(false);
             setDisplayAdds(false);
@@ -155,37 +157,38 @@ const UserPage = () => {
             <UserHeader user={user} />
 
             <Flex justifyContent="center" mt={4}>
-            <Button
+                <Button
                     mr={4}
                     onClick={() => handleToggleDisplay("posts")}
                     colorScheme={displayPosts ? "blue" : "gray"}
                 >
                     Posts
                 </Button>
-                {user.isBusiness? (
-                <Button
-					
-                    mr={4}
-                    onClick={() => handleToggleDisplay("products")}
-                    colorScheme={displayProducts ? "blue" : "gray"}
-                >
-                    Products
-                </Button>):null}
-                {user.isBusiness? (<Button
-                    onClick={() => handleToggleDisplay("adds")}
-                    colorScheme={displayAdds ? "blue" : "gray"}
-                >
-                    Advertisements
-                </Button>
-                ):null}
+                {user.isBusiness ? (
+                    <Button
+                        mr={4}
+                        onClick={() => handleToggleDisplay("products")}
+                        colorScheme={displayProducts ? "blue" : "gray"}
+                    >
+                        Products
+                    </Button>
+                ) : null}
+                {user.isBusiness ? (
+                    <Button
+                        onClick={() => handleToggleDisplay("adds")}
+                        colorScheme={displayAdds ? "blue" : "gray"}
+                    >
+                        Advertisements
+                    </Button>
+                ) : null}
                 {user.isConsultant ? (
-                <Button
-                    onClick={() => handleToggleDisplay("packages")}
-                    colorScheme={displayPackages ? "blue" : "gray"}
-                >
-                    Packages
-                </Button>
-                ):null}
+                    <Button
+                        onClick={() => handleToggleDisplay("packages")}
+                        colorScheme={displayJobs ? "blue" : "gray"}
+                    >
+                        Packages
+                    </Button>
+                ) : null}
             </Flex>
 
             {displayPosts && (

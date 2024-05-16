@@ -1,4 +1,4 @@
-import Package from "../models/jobModel.js"
+import Job from "../models/jobModel.js"
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -36,7 +36,7 @@ const createJob = async (req, res) => {
 	}
 };
 
-const getJob = async (req, res) => {
+const getJobs = async (req, res) => {
 	try {
 		const selectedJob = await Package.findById(req.params.id);
 
@@ -225,4 +225,4 @@ const getSalesJobs = async (req, res) => {
 	}
 };
 
-export { createJob, getJob, deleteJob, likeUnlikeJob, reviewJob, getFeedJobs, getUserJobs,buyJob, getSalesJobs };
+export { createJob, getJobs, deleteJob, likeUnlikeJob, reviewJob, getFeedJobs, getUserJobs,buyJob, getSalesJobs };
