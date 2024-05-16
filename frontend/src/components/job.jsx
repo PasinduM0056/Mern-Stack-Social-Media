@@ -92,7 +92,7 @@ const Job = ({ selectedJob, postedBy }) => {
                         variant="ghost"
                         colorScheme="red"
                         aria-label="Delete"
-                        onClick={handleDeletePackage}
+                        onClick={handleDeleteJob}
                     />
                 )}
             </Flex>

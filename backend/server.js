@@ -13,7 +13,7 @@ import JobPost from  "./routes/JobPostRoute.js";
 import canidateRoutes from './routes/candidatesRoutes.js';
 import { v2 as cloudinary } from "cloudinary";
 import { app, server } from "./socket/socket.js";
-
+import jobRoutes from "./routes/jobRoutes.js"
 
 
 dotenv.config();
@@ -40,7 +40,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/products", productRoutes);
-app.use("/api/packages", packageRoutes);
+app.use("/api/jobs", jobRoutes);
 app.use("/api/adds", addRoutes);
 app.use("/api/cadds", caddRoutes);
 app.use("/api/jobpost", JobPost);

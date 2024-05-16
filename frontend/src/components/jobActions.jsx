@@ -19,12 +19,12 @@ import { StarIcon } from "@chakra-ui/icons"; // Assuming you have the Chakra UI 
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import useShowToast from "../hooks/useShowToast";
-//import packagesAtom from "../atoms/packagesAtom";
+import jobsAtom from "../atoms/jobsAtom";
 
 const JobActions = ({ selectedJob }) => {
   const user = useRecoilValue(userAtom);
   const [liked, setLiked] = useState(selectedJob.likes.includes(user?._id));
-  const [packages, setPackages] = useRecoilState(packagesAtom);
+  const [jobs, setJobs] = useRecoilState(jobsAtom);
   const [isLiking, setIsLiking] = useState(false);
   const [isReviewing, setIsReviewing] = useState(false);
   const [review, setReview] = useState("");
@@ -94,7 +94,7 @@ const JobActions = ({ selectedJob }) => {
 		}
 		return p;
 	  });
-	  setPackages(updatedJobs);
+	  setJobs(updatedJobs);
 	  showToast("Success", "Review posted successfully", "success");
 	  onClose();
 	  setReview("");
