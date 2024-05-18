@@ -8,14 +8,14 @@ import { useEffect, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
-import packageAtom from "../atoms/packagesAtom";
-import PackageActions from "./PackageActions";
+import jobsAtom from "../atoms/jobsAtom";
+import jobActions from "../components/jobActions"
 
-const Package = ({ selectedPackage, postedBy }) => {
+const Job = ({ selectedJob, postedBy }) => {
     const [user, setUser] = useState(null);
     const showToast = useShowToast();
     const currentUser = useRecoilValue(userAtom);
-    const [packages, setPackages] = useRecoilState(packageAtom);
+    const [jobs, setJobs] = useRecoilState(jobsAtom);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const Package = ({ selectedPackage, postedBy }) => {
         getUser();
     }, [postedBy, showToast]);
 
-    const handleDeletePackage = async () => {
+    const handleDeleteJob = async () => {
         try {
             if (!window.confirm("Are you sure you want to delete this post?")) return;
 
@@ -60,22 +60,22 @@ const Package = ({ selectedPackage, postedBy }) => {
 
     // Calculate total rating and average rating
     let totalRating = 0;
-    selectedPackage.reviews.forEach((review) => {
+    selectedJob.reviews.forEach((review) => {
         totalRating += Number(review.rating);
     });
-    const averageRating = totalRating / selectedPackage.reviews.length;
+    const averageRating = totalRating / selectedJob.reviews.length;
 
     return (
-        <Link to={`/${user.username}/package/${selectedPackage._id}`}>
+        <Link to={`/${user.username}/job/${selectedJob._id}`}>
             <Flex p={4} border="1px solid" borderColor="gray.200" borderRadius="md" alignItems="center">
                 <Avatar size="md" name={user.name} src={user.profilePic} />
                 <Box flex="1" ml={4}>
-                    <Text fontWeight="bold">{selectedPackage.packageName}</Text>
+                    <Text fontWeight="bold">{selectedJob.jobName}</Text>
                     <Text fontSize="sm" color="gray.600">
                         Posted by {user.username} {user.isBusiness && <Image src='/verified.png' alt='Verified' w={3} h={3} />}
                     </Text>
                     <Text fontSize="sm" color="gray.500">
-                        {formatDistanceToNow(new Date(selectedPackage.createdAt))} ago
+                        {formatDistanceToNow(new Date(selectedJob.createdAt))} ago
                     </Text>
                     <Flex alignItems="center" mt={2}>
                         {[...Array(5)].map((_, index) => (
@@ -92,7 +92,7 @@ const Package = ({ selectedPackage, postedBy }) => {
                         variant="ghost"
                         colorScheme="red"
                         aria-label="Delete"
-                        onClick={handleDeletePackage}
+                        onClick={handleDeleteJob}
                     />
                 )}
             </Flex>
@@ -100,4 +100,4 @@ const Package = ({ selectedPackage, postedBy }) => {
     );
 };
 
-export default Package;
+export default Job;

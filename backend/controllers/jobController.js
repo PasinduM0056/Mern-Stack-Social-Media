@@ -1,13 +1,13 @@
-import Package from "../models/packageModel.js"
+import Job from "../models/jobModel.js"
 import User from "../models/userModel.js";
 import { v2 as cloudinary } from "cloudinary";
 
-const createPackage = async (req, res) => {
+const createJob = async (req, res) => {
 	try {
-		const { postedBy, packageName, packageDescription, packagePrice, packageOfferPrice} = req.body;
-		let { packageImg } = req.body;
+		const { postedBy, jobName, jobDescription, jobPrice, jobOfferPrice} = req.body;
+		let { jobImg } = req.body;
 
-		if (!postedBy || !packageName) {
+		if (!postedBy || !jobName) {
 			return res.status(400).json({ error: "Postedby and text fields are required" });
 		}
 
@@ -20,53 +20,53 @@ const createPackage = async (req, res) => {
 			return res.status(401).json({ error: "Unauthorized to create post" });
 		}
 
-		if (packageImg) {
-			const uploadedResponse = await cloudinary.uploader.upload(packageImg);
-			packageImg = uploadedResponse.secure_url;
+		if (jobImg) {
+			const uploadedResponse = await cloudinary.uploader.upload(jobImg);
+			jobImg = uploadedResponse.secure_url;
 		}
 
 
-		const newPackage = new Package({ postedBy, packageName, packageDescription, packagePrice, packageOfferPrice, packageImg});
-		await newPackage.save();
+		const newJob = new Package({ postedBy, jobName, jobDescription, jobPrice, jobOfferPrice, jobImg});
+		await newJob.save();
 
-		res.status(201).json(newPackage);
+		res.status(201).json(newJob);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 		console.log(err);
 	}
 };
 
-const getPackage = async (req, res) => {
+const getJobs = async (req, res) => {
 	try {
-		const selectedPackage = await Package.findById(req.params.id);
+		const selectedJob = await Package.findById(req.params.id);
 
-		if (!selectedPackage) {
+		if (!selectedJob) {
 			return res.status(404).json({ error: "Product not found" });
 		}
 
-		res.status(200).json(selectedPackage);
+		res.status(200).json(selectedJob);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
 };
 
-const deletePackage = async (req, res) => {
+const deleteJob = async (req, res) => {
 	try {
-		const selectedPackage = await Package.findById(req.params.id);
-		if (!selectedPackage) {
-			return res.status(404).json({ error: "Package not found" });
+		const selectedJob = await Job.findById(req.params.id);
+		if (!selectedJob) {
+			return res.status(404).json({ error: "Job not found" });
 		}
 
-		if (selectedPackage.postedBy.toString() !== req.user._id.toString()) {
+		if (selectedJob.postedBy.toString() !== req.user._id.toString()) {
 			return res.status(401).json({ error: "Unauthorized to delete post" });
 		}
 
-		if (selectedPackage.packageImg) {
-			const packageImgId = post.packageImg.split("/").pop().split(".")[0];
-			await cloudinary.uploader.destroy(packageImgId);
+		if (selectedJob.jobImg) {
+			const JobImgId = post.JobImg.split("/").pop().split(".")[0];
+			await cloudinary.uploader.destroy(JobImgId);
 		}
 
-		await Package.findByIdAndDelete(req.params.id);
+		await Job.findByIdAndDelete(req.params.id);
 
 		res.status(200).json({ message: "Post deleted successfully" });
 	} catch (err) {
@@ -74,27 +74,27 @@ const deletePackage = async (req, res) => {
 	}
 };
 
-const likeUnlikePackage = async (req, res) => {
+const likeUnlikeJob = async (req, res) => {
 	try {
-		const { id: packageId } = req.params;
+		const { id: jobId } = req.params;
 		const userId = req.user._id;
 
-		const selectedPackage = await Package.findById(packageId);
+		const selectedJob = await Job.findById(jobId);
 
-		if (!selectedPackage) {
+		if (!selectedJob) {
 			return res.status(404).json({ error: "Post not found" });
 		}
 
-		const userLikedPackage = selectedPackage.likes.includes(userId);
+		const userLikedJob = selectedJob.likes.includes(userId);
 
-		if (userLikedPackage) {
+		if (userLikedJob) {
 			// Unlike post
-			await Package.updateOne({ _id: packageId }, { $pull: { likes: userId } });
+			await Job.updateOne({ _id: jobId }, { $pull: { likes: userId } });
 			res.status(200).json({ message: "Post unliked successfully" });
 		} else {
 			// Like post
-			selectedPackage.likes.push(userId);
-			await selectedPackage.save();
+			selectedJob.likes.push(userId);
+			await selectedJob.save();
 			res.status(200).json({ message: "Package liked successfully" });
 		}
 	} catch (err) {
@@ -102,10 +102,10 @@ const likeUnlikePackage = async (req, res) => {
 	}
 };
 
-const reviewPackage = async (req, res) => {
+const reviewJob = async (req, res) => {
 	try {
 		const { text,rating } = req.body;
-		const packageId = req.params.id;
+		const jobId = req.params.id;
 		const userId = req.user._id;
 		const userProfilePic = req.user.profilePic;
 		const username = req.user.username;
@@ -115,15 +115,15 @@ const reviewPackage = async (req, res) => {
 			return res.status(400).json({ error: "Text field is required" });
 		}
 
-		const selectedPackage = await Package.findById(packageId);
-		if (!selectedPackage) {
+		const selectedJob = await Job.findById(jobId);
+		if (!selectedJob) {
 			return res.status(404).json({ error: "Post not found" });
 		}
 
 		const review = { userId, text, userProfilePic, username, rating };
 
-		selectedPackage.reviews.push(review);
-		await selectedPackage.save();
+		selectedJob.reviews.push(review);
+		await selectedJob.save();
 
 		res.status(200).json(review);
 	} catch (err) {
@@ -131,7 +131,7 @@ const reviewPackage = async (req, res) => {
 	}
 };
 
-const getFeedPackages = async (req, res) => {
+const getFeedJobs = async (req, res) => {
 	try {
 		const userId = req.user._id;
 		const user = await User.findById(userId);
@@ -141,15 +141,15 @@ const getFeedPackages = async (req, res) => {
 
 		const following = user.following;
 
-		const feedPackages = await Package.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+		const feedJobs = await Job.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
 
-		res.status(200).json(feedPackages);
+		res.status(200).json(feedJobs);
 	} catch (err) {
 		res.status(500).json({ error: err.message });
 	}
 };
 
-const getUserPackages = async (req, res) => {
+const getUserJobs = async (req, res) => {
 	const { username } = req.params;
 	try {
 		const user = await User.findOne({ username });
@@ -157,17 +157,17 @@ const getUserPackages = async (req, res) => {
 			return res.status(404).json({ error: "User not found" });
 		}
 
-		const packages = await Package.find({ postedBy: user._id }).sort({ createdAt: -1 });
+		const jobs = await Job.find({ postedBy: user._id }).sort({ createdAt: -1 });
 
-		res.status(200).json(packages);
+		res.status(200).json(jobs);
 	} catch (error) {
 		res.status(500).json({ error: error.message });
 	}
 };
 
-const buyPackage = async (req, res) => {
+const buyJob = async (req, res) => {
     try {
-        const packageId = req.params.id;
+        const jobId = req.params.id;
         const { buyerName, buyerAddress, buyerPhoneNumber } = req.body;
         const userId = req.user._id;
 
@@ -177,8 +177,8 @@ const buyPackage = async (req, res) => {
         }
 
         // Find the package
-        const selectedPackage = await Package.findById(packageId);
-        if (!selectedPackage) {
+        const selectedJob = await Job.findById(jobId);
+        if (!selectedJob) {
             return res.status(404).json({ error: "Package not found" });
         }
 
@@ -191,18 +191,18 @@ const buyPackage = async (req, res) => {
         };
 
         // Add buyer to the package's buyers array
-        selectedPackage.buyers.push(buyer);
+        selectedJob.buyers.push(buyer);
 
         // Save the updated package
-        await selectedPackage.save();
+        await selectedJob.save();
 
-        res.status(200).json({ message: "Package bought successfully", selectedPackage });
+        res.status(200).json({ message: "Package bought successfully", selectedJob });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
 
-const getSalesPackages = async (req, res) => {
+const getSalesJobs = async (req, res) => {
 	try {
 		const userId = req.user._id;
 		const user = await User.findById(userId);
@@ -215,9 +215,9 @@ const getSalesPackages = async (req, res) => {
 
 		const following = user.following;
 
-		const salesPackages = await Package.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
+		const salesJobs = await Job.find({ postedBy: { $in: following } }).sort({ createdAt: -1 });
 
-		res.status(200).json(salesPackages);
+		res.status(200).json(salesJobs);
 	} catch (err) {
 
 		res.status(500).json({ error: err.message });
@@ -225,4 +225,4 @@ const getSalesPackages = async (req, res) => {
 	}
 };
 
-export { createPackage, getPackage, deletePackage, likeUnlikePackage, reviewPackage, getFeedPackages, getUserPackages,buyPackage, getSalesPackages };
+export { createJob, getJobs, deleteJob, likeUnlikeJob, reviewJob, getFeedJobs, getUserJobs,buyJob, getSalesJobs };
