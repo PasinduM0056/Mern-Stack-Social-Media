@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import UserHeader from "../components/UserHeader";
 import { useParams } from "react-router-dom";
 import useShowToast from "../hooks/useShowToast";
-import { Flex, Spinner, Button } from "@chakra-ui/react"; // Assuming Button is imported from Chakra UI
+import { Flex, Spinner, Button } from "@chakra-ui/react";
 import Post from "../components/Post";
-import Product from "../components/Product"; // Assuming Product component is defined
-import Add from "../components/Add"; // Assuming Advertisement component is defined
+import Product from "../components/Product";
+import Add from "../components/Add";
 import useGetUserProfile from "../hooks/useGetUserProfile";
 import { useRecoilState } from "recoil";
 import postsAtom from "../atoms/postsAtom";
 import productsAtom from "../atoms/productAtom";
-import packagesAtom from "../atoms/packagesAtom";
 import addAtom from "../atoms/addAtoms";
-import Package from "../components/Package";
+import jobsAtom from "../atoms/jobsAtom";
+import Job from "../components/Job";
 
 const UserPage = () => {
     const { user, loading } = useGetUserProfile();
@@ -20,16 +20,16 @@ const UserPage = () => {
     const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postsAtom);
     const [products, setProducts] = useRecoilState(productsAtom);
-    const [packages, setPackages] = useRecoilState(packagesAtom);
+    const [jobs, setJobs] = useRecoilState(jobsAtom);
     const [adds, setAdds] = useRecoilState(addAtom);
     const [fetchingPosts, setFetchingPosts] = useState(true);
     const [fetchingProducts, setFetchingProducts] = useState(true);
-    const [fetchingPackages, setFetchingPackages] = useState(true);
+    const [fetchingJobs, setFetchingJobs] = useState(true);
     const [fetchingAdds, setFetchingAdds] = useState(true);
-    const [displayPosts, setDisplayPosts] = useState(true); // State to track whether to display posts
+    const [displayPosts, setDisplayPosts] = useState(true);
     const [displayProducts, setDisplayProducts] = useState(true);
-    const [displayPackages, setDisplayPackages] = useState(true); // State to track whether to display products
-    const [displayAdds, setDisplayAdds] = useState(false); // State to track whether to display advertisements
+    const [displayJobs, setDisplayJobs] = useState(true);
+    const [displayAdds, setDisplayAdds] = useState(false);
 
     useEffect(() => {
         const getPosts = async () => {
@@ -71,7 +71,6 @@ const UserPage = () => {
         getProducts();
     }, [username, showToast, setProducts, user]);
 
-
     useEffect(() => {
         const getAdds = async () => {
             if (!user) return;
@@ -93,48 +92,53 @@ const UserPage = () => {
     }, [username, showToast, setAdds, user]);
 
     useEffect(() => {
-        const getPackages = async () => {
+        const getJobs = async () => {
             if (!user) return;
-            setFetchingPackages(true);
+            setFetchingJobs(true);
             try {
-                const res = await fetch(`/api/packages/user/${username}`);
-                const data = await res.json();
-                console.log(data);
-                setPackages(data);
+                const res = await fetch(`/api/jobs/user/${username}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    console.log(data);
+                    setJobs(Array.isArray(data) ? data : []);
+                } else {
+                    const errorData = await res.json();
+                    showToast("Error", errorData.error, "error");
+                    setJobs([]);
+                }
             } catch (error) {
                 showToast("Error", error.message, "error");
-                setPackages([]);
+                setJobs([]);
             } finally {
-                setFetchingPackages(false);
+                setFetchingJobs(false);
             }
         };
-
-        getPackages();
-    }, [username, showToast, setPackages, user]);
-
-   
+    
+        getJobs();
+    }, [username, showToast, setJobs, user]);
+    
 
     const handleToggleDisplay = (displayType) => {
         if (displayType === "posts") {
             setDisplayPosts(true);
             setDisplayProducts(false);
             setDisplayAdds(false);
-            setDisplayPackages(false);
+            setDisplayJobs(false);
         } else if (displayType === "products") {
             setDisplayPosts(false);
             setDisplayProducts(true);
             setDisplayAdds(false);
-            setDisplayPackages(false);
+            setDisplayJobs(false);
         } else if (displayType === "adds") {
             setDisplayPosts(false);
             setDisplayProducts(false);
             setDisplayAdds(true);
-            setDisplayPackages(false);
-        } else if (displayType === "packages"){
+            setDisplayJobs(false);
+        } else if (displayType === "packages") {
             setDisplayPosts(false);
             setDisplayProducts(false);
             setDisplayAdds(false);
-            setDisplayPackages(true);
+            setDisplayJobs(true);
         }
     };
 
@@ -153,37 +157,38 @@ const UserPage = () => {
             <UserHeader user={user} />
 
             <Flex justifyContent="center" mt={4}>
-            <Button
+                <Button
                     mr={4}
                     onClick={() => handleToggleDisplay("posts")}
                     colorScheme={displayPosts ? "blue" : "gray"}
                 >
                     Posts
                 </Button>
-                {user.isBusiness? (
-                <Button
-					
-                    mr={4}
-                    onClick={() => handleToggleDisplay("products")}
-                    colorScheme={displayProducts ? "blue" : "gray"}
-                >
-                    Products
-                </Button>):null}
-                {user.isBusiness? (<Button
-                    onClick={() => handleToggleDisplay("adds")}
-                    colorScheme={displayAdds ? "blue" : "gray"}
-                >
-                    Advertisements
-                </Button>
-                ):null}
+                {user.isBusiness ? (
+                    <Button
+                        mr={4}
+                        onClick={() => handleToggleDisplay("products")}
+                        colorScheme={displayProducts ? "blue" : "gray"}
+                    >
+                        Products
+                    </Button>
+                ) : null}
+                {user.isBusiness ? (
+                    <Button
+                        onClick={() => handleToggleDisplay("adds")}
+                        colorScheme={displayAdds ? "blue" : "gray"}
+                    >
+                        Advertisements
+                    </Button>
+                ) : null}
                 {user.isConsultant ? (
-                <Button
-                    onClick={() => handleToggleDisplay("packages")}
-                    colorScheme={displayPackages ? "blue" : "gray"}
-                >
-                    Packages
-                </Button>
-                ):null}
+                    <Button
+                        onClick={() => handleToggleDisplay("packages")}
+                        colorScheme={displayJobs ? "blue" : "gray"}
+                    >
+                        Packages
+                    </Button>
+                ) : null}
             </Flex>
 
             {displayPosts && (
@@ -231,17 +236,17 @@ const UserPage = () => {
                 </>
             )}
 
-            {displayPackages && (
+            {displayJobs && (
                 <>
-                    {!fetchingPackages && packages.length === 0 && <h1>No packages available.</h1>}
-                    {fetchingPackages && (
+                    {!fetchingJobs && jobs.length === 0 && <h1>No jobs available.</h1>}
+                    {fetchingJobs && (
                         <Flex justifyContent={"center"} my={12}>
                             <Spinner size={"xl"} />
                         </Flex>
                     )}
 
-                    {packages.map((selectedPackage) => (
-                        <Package key={selectedPackage._id} selectedPackage={selectedPackage} postedBy={selectedPackage.postedBy} />
+                    {jobs.map((selectedJob) => (
+                        <Job key={selectedJob._id} selectedPackage={selectedJob} postedBy={selectedJob.postedBy} />
                     ))}
                 </>
             )}
