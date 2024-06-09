@@ -22,20 +22,21 @@ import {
 	const [isConsultantAccount, setIsConsultantAccount] = useState(isConsultant);
 	const [isOrganizationAccount, setIsOrganizationAccount] = useState(isOrganization);
 	const [inputs, setInputs] = useState({
-	  username: user.username,
+	  petName: user.petName,
+	  ownerName: user.ownerName,
+	  petCategory: user.petCategory,
 	  email: user.email,
 	  bio: user.bio,
-	  name: user.name,
+	  firstName: user.firstName,
+	  lastName: user.lastName,
 	  address: user.address,
 	  idNumber: user.idNumber,
 	  companyName: user.companyName,
 	  companyAbout: user.companyAbout,
 	  qualification: user.qualification,
-	  experienses: user.experienses,
+	  experiense: user.experiense,
 	  OrganizationName: user.OrganizationName,
-	  OrganizationAddress: user.OrganizationAddress,
 	  OrganizationAbout: user.OrganizationAbout,
-	  IDnumber: user.IDnumber,
 	  password: "",
 	});
 	const fileRef = useRef(null);
@@ -178,7 +179,7 @@ import {
 			</Heading>
           )}
 			
-			<FormControl id="userName">
+			<FormControl id="petName">
 			  <Stack direction={["column", "row"]} spacing={6}>
 				<Center>
 				  <Avatar
@@ -204,12 +205,24 @@ import {
 
 			<>
 				<FormControl>
-				  <FormLabel>Name</FormLabel>
+				  <FormLabel>Pet Name</FormLabel>
 				  <Input
 					placeholder="johndoe"
-					value={inputs.name}
+					value={inputs.petName}
 					onChange={(e) =>
-					  setInputs({ ...inputs, name: e.target.value })
+					  setInputs({ ...inputs, petName: e.target.value })
+					}
+					_placeholder={{ color: "gray.500" }}
+					type="text"
+				  />
+				</FormControl>
+				<FormControl>
+				  <FormLabel>Pet Name</FormLabel>
+				  <Input
+					placeholder="johndoe"
+					value={inputs.ownerName}
+					onChange={(e) =>
+					  setInputs({ ...inputs, ownerName: e.target.value })
 					}
 					_placeholder={{ color: "gray.500" }}
 					type="text"

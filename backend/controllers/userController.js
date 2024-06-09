@@ -33,8 +33,8 @@ const getUserProfile = async (req, res) => {
 
 const signupUser = async (req, res) => {
 	try {
-		const { email, username, password } = req.body;
-		const user = await User.findOne({ $or: [{ email }, { username }] });
+		const { email, petName, petCategory, ownerName, password } = req.body;
+		const user = await User.findOne({ $or: [{ email }, { petName }] });
 
 		if (user) {
 			return res.status(400).json({ error: "User already exists" });
@@ -44,7 +44,9 @@ const signupUser = async (req, res) => {
 
 		const newUser = new User({
 			email,
-			username,
+			petName, 
+			petCategory,
+			ownerName, 
 			password: hashedPassword,
 		});
 		await newUser.save();
@@ -55,7 +57,9 @@ const signupUser = async (req, res) => {
 			res.status(201).json({
 				_id: newUser._id,
 				email: newUser.email,
-				username: newUser.username,
+				petName: newUser.petName,
+				petCategory: newUser.petCategory,
+				ownerName: newUser.ownerName,
 				bio: newUser.bio,
 				profilePic: newUser.profilePic,
 			});
@@ -70,8 +74,8 @@ const signupUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
 	try {
-		const { username, password } = req.body;
-		const user = await User.findOne({ username });
+		const { petName, password } = req.body;
+		const user = await User.findOne({ petName });
 		const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
 		if (!user || !isPasswordCorrect) return res.status(400).json({ error: "Invalid username or password" });
@@ -86,7 +90,9 @@ const loginUser = async (req, res) => {
 		res.status(200).json({
 			_id: user._id,
 			email: user.email,
-			username: user.username,
+			petName: user.username,
+			petCategory: user.userCategory,
+			petOwner: user.userOwner,
 			bio: user.bio,
 			profilePic: user.profilePic,
 		});
@@ -137,9 +143,9 @@ const followUnFollowUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-	const { email, username, password, bio} = req.body;
-	const { name, address, companyName, companyAbout, idNumber} = req.body;
-	const { qualification, experienses, OrganizationName,OrganizationAddress, OrganizationAbout, IDnumber} = req.body;
+	const { email, petName,petCategory,petOwner, password, bio} = req.body;
+	const { firstName, lastName, address, companyName, companyAbout, idNumber, qualification, experiense, OrganizationName, OrganizationAbout} = req.body;
+	
 
 	let { profilePic } = req.body;
 
@@ -167,23 +173,27 @@ const updateUser = async (req, res) => {
 		}
 
 		user.email = email || user.email;
-		user.username = username || user.username;
+		user.petName = petName || user.petName;
+		User.petCategory = petCategory || user.petCategory;
+		User.petOwner = petOwner || user.petOwner;
 		user.profilePic = profilePic || user.profilePic;
 		user.bio = bio || user.bio;
+		user.address = address || user.address;
 
-		user.name = name || user.name;
-        user.address = address || user.address;
+		user.firstName = firstName || user.firstName;
+		user.lastName = lastName || user.lastName;
         user.idNumber = idNumber || user.idNumber;
+		user.phoneNumber = phoneNumber || user.phoneNumber;
         user.companyName = companyName || user.companyName;
         user.companyAbout = companyAbout || user.companyAbout;
 
+		user.position = position || user.position;
 		user.qualification = qualification || user.qualification;
-		user.experienses = experienses || user.experienses;
+		user.experiense = experiense || user.experiense;
 
 		user.OrganizationName = OrganizationName || user.OrganizationName;
-		user.OrganizationAddress = OrganizationAddress || user.OrganizationAddress;
 		user.OrganizationAbout = OrganizationAbout || user.OrganizationAbout;
-		user.IDnumber = IDnumber || user.IDnumber;
+		
 
 		user = await user.save();
 
@@ -192,7 +202,7 @@ const updateUser = async (req, res) => {
 			{ "replies.userId": userId },
 			{
 				$set: {
-					"replies.$[reply].username": user.username,
+					"replies.$[reply].username": user.petName,
 					"replies.$[reply].userProfilePic": user.profilePic,
 				},
 			},
@@ -255,7 +265,7 @@ const freezeAccount = async (req, res) => {
 
   
 const submitBusinessProfile = async (req, res) => {
-    const { name, address, idNumber, companyName, companyAbout, password } = req.body;
+    const { firstName, lastName, address, idNumber, companyName, companyAbout, password } = req.body;
     let { identityVerify } = req.body;
     const userId = req.user._id;
 
@@ -287,7 +297,8 @@ const submitBusinessProfile = async (req, res) => {
         }
 
         // Update user fields
-        user.name = name || user.name;
+        user.firstName = firstName || user.firstName;
+		user.lastName = lastName || user.lastName;
         user.address = address || user.address;
         user.idNumber = idNumber || user.idNumber;
         user.companyName = companyName || user.companyName;
@@ -312,7 +323,7 @@ const submitBusinessProfile = async (req, res) => {
 
 
 const submitConsultantProfile = async (req, res) => {
-    const { name, address, idNumber, qulification, experienses, password } = req.body;
+    const { firstName, lastName, address, idNumber, experiense, qualification, password } = req.body;
     let { identityVerify } = req.body;
     const userId = req.user._id;
 
@@ -344,11 +355,12 @@ const submitConsultantProfile = async (req, res) => {
         }
 
         // Update user fields
-        user.name = name || user.name;
+		user.firstName = firstName || user.firstName;
+		user.lastName = lastName || user.lastName;
         user.address = address || user.address;
         user.idNumber = idNumber || user.idNumber;
-        user.qulification = qulification || user.qulification;
-        user.experienses = experienses || user.experienses;
+        user.qualification = qualification || user.qualification;
+        user.experiense = experiense || user.experiense;
         user.identityVerify = identityVerify || user.identityVerify;
 
 
@@ -422,17 +434,22 @@ const checkIsOrganization = async (req, res) => {
 
 
   const submitOrganizationProfile = async (req, res) => {
-	const { OrganizationName, OrganizationAddress, OrganizationAbout, IDnumber } = req.body;
-	const userId = req.user._id;
+	const { firstName, lastName, address, idNumber, OrganizationName, OrganizationAbout, password } = req.body;
+    let { identityVerify } = req.body;
+    const userId = req.user._id;
 	try {
 	  let user = await User.findById(userId);
 	  if (!user) return res.status(400).json({ error: "User not found" });
   
 	  // Update user with business profile data
+	  user.firstName = firstName || user.firstName;
+	  user.lastName = lastName || user.lastName;
+      user.address = address || user.address;
+      user.idNumber = idNumber || user.idNumber;
 	  user.OrganizationName = OrganizationName;
-	  user.OrganizationAddress = OrganizationAddress;
 	  user.OrganizationAbout = OrganizationAbout;
-	  user.IDnumber = IDnumber;
+	  user.identityVerify = identityVerify || user.identityVerify;
+	  
   
 	  user.isOrganization = true;
 	  // Save the updated user
@@ -457,8 +474,9 @@ export {
 	freezeAccount,
 	submitBusinessProfile,
 	submitConsultantProfile,
+	submitOrganizationProfile,
 	checkIsBusiness,
 	checkIsConsultant,
 	checkIsOrganization,
-	submitOrganizationProfile
+	
 };
